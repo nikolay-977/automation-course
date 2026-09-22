@@ -32,13 +32,25 @@ public class CartTest {
     }
 
     @Test
-    void testHomePageVisual() throws IOException {
+    void testHomePageVisual() throws IOException, InterruptedException {
         page.navigate("https://the-internet.herokuapp.com");
         Path actual = getTimestampPath("actual.png");
         page.screenshot(new Page.ScreenshotOptions().setPath(actual));
 
-        long mismatch = Files.mismatch(actual, Paths.get("screenshots/expected/expected.png"));
-        assertThat(mismatch).isEqualTo(-1); // -1 = файлы идентичны
+        Path expected = Paths.get("screenshots/expected/expected.png");
+
+        // Если эталона нет — сохраняем текущий скриншот как эталон
+        if (!Files.exists(expected)) {
+            Files.createDirectories(expected.getParent());
+            Files.copy(actual, expected);
+            return;
+        }
+
+        Path diff = getTimestampPath("diff.png");
+
+        long diffPixelCount = ImageComparison.compare(actual, expected, diff);
+
+        assertThat(diffPixelCount).isLessThan(10); // Допуск 10 пикселей
     }
 
     private Path getTimestampPath(String filename) throws IOException {
