@@ -6,6 +6,10 @@ jobs:
   test:
     # Запуск на последней версии Ubuntu
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        browser: [chromium, firefox, webkit]
+      fail-fast: false  # Не останавливать при падении одного теста
     steps:
       # Шаг 1: Получение кода из репозитория
       - uses: actions/checkout@v4
