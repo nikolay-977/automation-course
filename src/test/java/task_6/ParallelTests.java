@@ -12,13 +12,6 @@ import static org.junit.jupiter.api.Assertions.*;
 @Execution(ExecutionMode.CONCURRENT)
 public class ParallelTests {
 
-    private static Playwright playwright;
-
-    @BeforeAll
-    static void setup() {
-        playwright = Playwright.create();
-    }
-
     @ParameterizedTest
     @ValueSource(strings = {"chromium", "firefox", "webkit"})
     void testLoginPage(String browserType) {
@@ -68,10 +61,5 @@ public class ParallelTests {
                 context.close();
             }
         }
-    }
-
-    @AfterAll
-    static void teardown() {
-        playwright.close();
     }
 }
