@@ -14,6 +14,7 @@
         <junit.jupiter.version>5.11.4</junit.jupiter.version>
         <junit.platform.version>1.11.4</junit.platform.version>
         <allure.version>2.24.0</allure.version>
+        <report.version>2.31.0</report.version>
         <allure-maven.version>2.12.0</allure-maven.version>
         <extentreports.version>5.1.1</extentreports.version>
         <assertj.version>3.27.3</assertj.version>
@@ -23,6 +24,7 @@
         <s3.version>2.31.5</s3.version>
         <surefire.version>3.0.0</surefire.version>
         <compiler.version>3.11.0</compiler.version>
+        <allure-maven.version>2.12.0</allure-maven.version>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
