@@ -13,7 +13,7 @@ public class SimpleInterceptionTest {
     @BeforeAll
     static void setupAll() {
         playwright = Playwright.create();
-        browser = playwright.chromium().launch(new BrowserType.LaunchOptions().setHeadless(false));
+        browser = playwright.chromium().launch(new BrowserType.LaunchOptions().setHeadless(true));
     }
 
     @BeforeEach

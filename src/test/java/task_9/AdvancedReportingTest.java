@@ -24,6 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @Epic("Тесты для the-internet.herokuapp.com")
 @Feature("Работа с JavaScript-алертами")
 public class AdvancedReportingTest {
+    private static final Path EXTENT_REPORT_DIR  = Paths.get("target/extent-report");
     private static ExtentReports extent;
     private Browser browser;
     private Playwright playwright;
@@ -32,7 +33,8 @@ public class AdvancedReportingTest {
 
     @BeforeAll
     static void setupExtent() {
-        ExtentSparkReporter reporter = new ExtentSparkReporter("target/allure-results/extent-report.html");
+        ExtentSparkReporter reporter =
+                new ExtentSparkReporter(EXTENT_REPORT_DIR.resolve("extent-report.html").toString());
         reporter.config().setDocumentTitle("Playwright Extent Report");
         extent = new ExtentReports();
         extent.attachReporter(reporter);
@@ -42,7 +44,7 @@ public class AdvancedReportingTest {
     void setUp(TestInfo testInfo) {
         playwright = Playwright.create();
         browser = playwright.chromium().launch(
-                new BrowserType.LaunchOptions().setHeadless(false));
+                new BrowserType.LaunchOptions().setHeadless(true));
         BrowserContext context = browser.newContext();
         page = context.newPage();
         test = extent.createTest(testInfo.getDisplayName());
@@ -64,7 +66,7 @@ public class AdvancedReportingTest {
 
         } catch (Exception e) {
             foTestFailure(e);
-            throw e;
+            throw new RuntimeException("Тест упал: " + e.getMessage(), e);
         }
     }
 
@@ -113,7 +115,7 @@ public class AdvancedReportingTest {
 
     private void captureSuccessScreenshot() {
         String screenshotName = "success-screenshot.png";
-        Path screenshotPath = Paths.get("target/allure-results", screenshotName);
+        Path screenshotPath = EXTENT_REPORT_DIR.resolve(screenshotName);
 
         byte[] screenshot = page.screenshot();
         try {
@@ -151,8 +153,7 @@ public class AdvancedReportingTest {
         }
 
         // Логирование ошибки в ExtentReports
-        String screenshotName = "error-screenshot.png";
-        Path screenshotPath = Paths.get("target/allure-results", screenshotName);
+        Path screenshotPath = EXTENT_REPORT_DIR.resolve("error-screenshot.png");
         try {
             Files.createDirectories(screenshotPath.getParent());
             Files.write(screenshotPath, failureScreenshot);
