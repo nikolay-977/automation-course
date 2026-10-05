@@ -3,7 +3,7 @@ package task_14;
 import com.microsoft.playwright.*;
 import org.junit.jupiter.api.*;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 
 public class MobileDragAndDropTest {
     Playwright playwright;
@@ -15,11 +15,11 @@ public class MobileDragAndDropTest {
     void setup() {
         playwright = Playwright.create();
 
-        // Ручная настройка параметров Samsung Galaxy S22 Ultra
+        // Ручная настройка параметров Samsung Galaxy S22 Ultra (эталонные значения)
         Browser.NewContextOptions deviceOptions = new Browser.NewContextOptions()
                 .setUserAgent("Mozilla/5.0 (Linux; Android 12; SM-S908B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.0.0 Mobile Safari/537.36")
-                .setViewportSize(384, 873)  // Разрешение экрана
-                .setDeviceScaleFactor(3.5)
+                .setViewportSize(384, 832)   // эталонный viewport S22 Ultra
+                .setDeviceScaleFactor(3)     // эталонный deviceScaleFactor
                 .setIsMobile(true)
                 .setHasTouch(true);
 
@@ -35,17 +35,15 @@ public class MobileDragAndDropTest {
         Locator columnA = page.locator("#column-a");
         Locator columnB = page.locator("#column-b");
 
-        // 1. Проверка начального состояния
-        assertEquals("A", columnA.textContent().trim());
-        assertEquals("B", columnB.textContent().trim());
+        // 1. Проверка начального состояния (ассерты Playwright с автоожиданием)
+        assertThat(columnA).hasText("A");
+        assertThat(columnB).hasText("B");
 
         // 2. Перетаскивание элемента A в зону B
         columnA.dragTo(columnB);
 
-        // 3. Ожидание и проверка
-        columnB.waitFor(new Locator.WaitForOptions()
-                .setState(com.microsoft.playwright.options.WaitForSelectorState.VISIBLE));
-        assertEquals("A", columnB.textContent().trim());
+        // 3. Ожидание смены текста — hasText сам ретраит до таймаута
+        assertThat(columnB).hasText("A");
     }
 
     @AfterEach
